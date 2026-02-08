@@ -106,7 +106,7 @@ source venv/bin/activate
 
 Step 2: Run the application
 
-python application_main.py dev
+python application_main.py LOCAL
 
 Replace dev with test or prod as needed.
 
