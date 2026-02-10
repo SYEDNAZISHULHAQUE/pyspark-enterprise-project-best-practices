@@ -2,8 +2,7 @@ import sys
 from lib import utils, Data_Manipulation, Data_reader
 from pyspark.sql.functions import *
 import lib.utils
-print("UTILS FILE:", lib.utils.__file__)
-print("ATTRS:", dir(lib.utils))
+from logger import Log4j
 
 if __name__ == "__main__":
 
@@ -18,35 +17,36 @@ if __name__ == "__main__":
 
     print("Creating Spark Session...")
     spark = utils.get_spark_session(job_run_env)
-    print("Spark Session Created")
+    logger = Log4j(spark)
+    logger.warn("Created Spark Session")
 
 
     # ============================
     # Read Input Data
     # ============================
-    print("Reading Employees Data...")
+    logger.info("Reading Employees Data...")
     employees_df = Data_reader.read_employees(spark, job_run_env)
 
-    print("Reading Salaries Data...")
+    logger.info("Reading Salaries Data...")
     salaries_df = Data_reader.read_salaries(spark, job_run_env)
 
 
     # ============================
     # Transformations
     # ============================
-    print("Filtering High Salary Records...")
+    logger.info("Filtering High Salary Records...")
     salaries_filtered = Data_Manipulation.filter_high_salary(
         salaries_df,
         min_salary=7000
     )
 
-    print("Joining Employees and Salaries...")
+    logger.info("Joining Employees and Salaries...")
     joined_df = Data_Manipulation.join_employees_salaries(
         employees_df,
         salaries_filtered
     )
 
-    print("Aggregating Salary By State...")
+    logger.info("Aggregating Salary By State...")
     aggregated_results = Data_Manipulation.aggregate_salary_by_state(
         joined_df
     )
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     # ============================
     # Output
     # ============================
-    print("Final Aggregated Results:")
+    logger.info("Final Aggregated Results:")
     aggregated_results.show(truncate=False)
 
-    print("End of Main Job")
+    logger.info("this is the end of main")
